@@ -31,7 +31,27 @@ String get binaryName {
 // ignore: missing_return
 DynamicLibrary tflitelib = () {
   if (Platform.isAndroid) {
-    return DynamicLibrary.open('libtensorflowlite_c.so');
+    try {
+      DynamicLibrary lib = DynamicLibrary.open('libtensorflowlite_c.so');
+      print("successfully loaded libtensorflowlite_c");
+      return lib;
+    } catch (e) {
+      print("fail, trying workarounds...");
+      try {
+        String pathLibTensorFlowLite = TfliteData.shared.pathLibTensorFlowLite;
+        if (pathLibTensorFlowLite.isEmpty) {
+          print("fail, trying workarounds pathLibTensorFlowLite empty...");
+          rethrow;
+        }
+        // DynamicLibrary lib = DynamicLibrary.open("$pathLibTensorFlowLite/libtensorflowlite_c.so");
+        DynamicLibrary lib = DynamicLibrary.open(pathLibTensorFlowLite);
+        print("successfully loaded libtensorflowlite_c with strange workaround at $pathLibTensorFlowLite");
+        return lib;
+      } catch (_) {
+        print("fail, trying path native workarounds...");
+        rethrow;
+      }
+    }
   } else if (Platform.isIOS) {
     return DynamicLibrary.process();
   } else {    
