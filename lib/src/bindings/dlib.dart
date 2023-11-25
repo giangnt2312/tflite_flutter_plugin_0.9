@@ -1,6 +1,6 @@
 import 'dart:ffi';
 import 'dart:io';
-
+import '../../tflite_data.dart';
 import 'package:path/path.dart' as Path;
 
 const Set<String> _supported = {'linux', 'mac', 'win'};
